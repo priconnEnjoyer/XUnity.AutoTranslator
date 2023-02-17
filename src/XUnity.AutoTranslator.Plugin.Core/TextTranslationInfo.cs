@@ -12,6 +12,7 @@ using XUnity.AutoTranslator.Plugin.Utilities;
 using XUnity.Common.Constants;
 using XUnity.Common.Extensions;
 using XUnity.Common.Harmony;
+using XUnity.Common.Logging;
 using XUnity.Common.Utilities;
 
 namespace XUnity.AutoTranslator.Plugin.Core
@@ -166,7 +167,71 @@ namespace XUnity.AutoTranslator.Plugin.Core
 
          var type = ui.GetUnityType();
 
-         if( UnityTypes.Text != null && UnityTypes.Text.IsAssignableFrom( type ) )
+         // priconne specific handling of its customuilabel thing (derived from ngui i guess)
+         if( UnityTypes.UILabel != null && UnityTypes.UILabel.UnityType.IsAssignableFrom( type ) )
+         {
+            var text = (Component)ui;
+
+            var componentWidth = GetComponentWidth( text );
+            var quarterScreenSize = Screen.width / 4;
+            var isComponentWide = componentWidth > quarterScreenSize;
+
+            bool isLineSpacingSet = false;
+            bool isHorizontalOverflowSet = false;
+            bool isVerticalOverflowSet = false;
+            bool isUntouched = _unresize == null;
+            if( cache.HasAnyResizeCommands )
+            {
+               var segments = text.gameObject.GetPathSegments();
+               var scope = TranslationScopeHelper.GetScope( ui );
+               if( cache.TryGetUIResize( segments, scope, out var result ) )
+               {
+                  if( result.AutoResizeCommand != null )
+                  {
+                    
+                  }
+
+                  if( result.ResizeCommand != null )
+                  {
+                     var currentFontSize = (int?)UnityTypes.UILabel_Properties.FontSize.Get( ui );
+
+                     if( currentFontSize.HasValue && !Equals( _alteredFontSize, currentFontSize ) )
+                     {
+                        var newFontSize = result.ResizeCommand.GetSize( currentFontSize.Value );
+                        if( newFontSize.HasValue )
+                        {
+                           UnityTypes.UILabel_Properties.FontSize.Set( ui, newFontSize.Value );
+                           _alteredFontSize = newFontSize.Value;
+
+                           if( isUntouched )
+                           {
+                              _unresize += g =>
+                              {
+                                 UnityTypes.UILabel_Properties.FontSize.Set( g, currentFontSize );
+                              };
+                           }
+                        }
+                     }
+                  }
+
+                  if( result.LineSpacingCommand != null )
+                  {
+                     
+                  }
+
+                  if( result.HorizontalOverflowCommand != null )
+                  {
+                     
+                  }
+
+                  if( result.VerticalOverflowCommand != null )
+                  {
+                     
+                  }
+               }
+            }
+         }
+         else if( UnityTypes.Text != null && UnityTypes.Text.IsAssignableFrom( type ) )
          {
             var text = (Component)ui;
 

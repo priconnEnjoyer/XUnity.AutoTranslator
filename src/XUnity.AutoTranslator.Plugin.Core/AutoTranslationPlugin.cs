@@ -909,7 +909,15 @@ namespace XUnity.AutoTranslator.Plugin.Core
                }
 
                // NGUI only behaves if you set the text after the resize behaviour
-               ui.SetText( text, info );
+
+               if( originalText.Contains( "[3C404EFF]" ) )
+               {
+                  ui.SetText( "[3C404EFF]" + text, info );
+               }
+               else
+               {
+                  ui.SetText( text, info );
+               }
 
                info?.ResetScrollIn( ui );
 
@@ -2077,7 +2085,10 @@ namespace XUnity.AutoTranslator.Plugin.Core
                if( context == null ) // never set text if operation is contextualized (only a part translation)
                {
                   var isPartial = tc.IsPartial( textKey.TemplatedOriginal_Text, scope );
-                  SetTranslatedText( ui, untemplatedTranslation, !isPartial ? text : null, info );
+                  if( !ui.GetPath().Contains( "/_Game(Clone)/UI Root/ViewsArea/View/ViewStoryAdventure(Clone)/Root/Bottom/WindowPanel/TextFrame/NameFrame/NameText" ) )
+                  {
+                     SetTranslatedText( ui, untemplatedTranslation, !isPartial ? text : null, info );
+                  }
                }
                return untemplatedTranslation;
             }
