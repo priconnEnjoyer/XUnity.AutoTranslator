@@ -188,7 +188,7 @@ namespace XUnity.AutoTranslator.Plugin.Core
                {
                   if( result.AutoResizeCommand != null )
                   {
-                    
+                     
                   }
 
                   if( result.ResizeCommand != null )

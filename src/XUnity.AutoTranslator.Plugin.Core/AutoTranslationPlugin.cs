@@ -920,7 +920,7 @@ namespace XUnity.AutoTranslator.Plugin.Core
 
                if( !upath.Contains( storyNameLabel ) && !upath.Contains( battleStoryNameLabel ) && !upath.Contains( battleTextBalloon ) )
                {
-                  if( originalText.Contains( "[3C404EFF]" ) )
+                  if( originalText != null && originalText.Contains( "[3C404EFF]" ) )
                   {
                      ui.SetText( "[3C404EFF]" + text, info );
                   }
