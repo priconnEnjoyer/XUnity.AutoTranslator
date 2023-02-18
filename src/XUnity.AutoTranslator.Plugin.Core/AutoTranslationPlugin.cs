@@ -910,13 +910,24 @@ namespace XUnity.AutoTranslator.Plugin.Core
 
                // NGUI only behaves if you set the text after the resize behaviour
 
-               if( originalText.Contains( "[3C404EFF]" ) )
+               //some priconne jank, if you set the nameplate text it will erase the dialogue text, and for some reason the game really wants to set the nameplate text multiple times during dialogue
+               //if you set the skill balloon text it wont disappear, maybe need to call something to remove the balloon
+               string upath = ui.GetPath();
+
+               string storyNameLabel = "/_Game(Clone)/UI Root/ViewsArea/View/ViewStoryAdventure(Clone)/Root/Bottom/WindowPanel/TextFrame/NameFrame/NameText";
+               string battleStoryNameLabel = "/_Game(Clone)/UI Root/FrontArea/IgnoreBlurLayer/DialogArea/DialogTutorialAdventure(Clone)/Main/Root/Bottom/WindowAnchor/WindowPanel/TextFrame/NameFrame/NameLabel";
+               string battleTextBalloon = "/PartsSkillNameBalloon/NameLabel";
+
+               if( !upath.Contains( storyNameLabel ) && !upath.Contains( battleStoryNameLabel ) && !upath.Contains( battleTextBalloon ) )
                {
-                  ui.SetText( "[3C404EFF]" + text, info );
-               }
-               else
-               {
-                  ui.SetText( text, info );
+                  if( originalText.Contains( "[3C404EFF]" ) )
+                  {
+                     ui.SetText( "[3C404EFF]" + text, info );
+                  }
+                  else
+                  {
+                     ui.SetText( text, info );
+                  }
                }
 
                info?.ResetScrollIn( ui );
@@ -2085,10 +2096,7 @@ namespace XUnity.AutoTranslator.Plugin.Core
                if( context == null ) // never set text if operation is contextualized (only a part translation)
                {
                   var isPartial = tc.IsPartial( textKey.TemplatedOriginal_Text, scope );
-                  if( !ui.GetPath().Contains( "/_Game(Clone)/UI Root/ViewsArea/View/ViewStoryAdventure(Clone)/Root/Bottom/WindowPanel/TextFrame/NameFrame/NameText" ) )
-                  {
-                     SetTranslatedText( ui, untemplatedTranslation, !isPartial ? text : null, info );
-                  }
+                  SetTranslatedText( ui, untemplatedTranslation, !isPartial ? text : null, info );    
                }
                return untemplatedTranslation;
             }
