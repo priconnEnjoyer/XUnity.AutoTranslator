@@ -1,5 +1,7 @@
 ﻿# XUnity Auto Translator
 
+this fork is a collection of some jank changes to the plugin to make it work in the DMM version of princess connect redive
+
 ## Index
  * [Introduction](#introduction)
  * [Plugin Frameworks](#plugin-frameworks)
